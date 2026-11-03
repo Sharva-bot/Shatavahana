@@ -1,0 +1,1098 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Shatavahana · Model Play Area</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --dp-color-chassis:#cbd0d2;
+    --dp-color-raised:#e7eaeb;
+    --dp-color-well:#b6bec2;
+    --dp-color-ink:#181e22;
+    --dp-color-label:#414b52;
+    --dp-color-field:#20272b;
+    --dp-color-on-field:#f2f4f4;
+    --dp-color-on-field-muted:#d8dee1;
+    --dp-color-accent:#f15b22;
+    --dp-typography-sans:"Industrial Host",sans-serif;
+    --dp-typography-mono:"Industrial Plex",monospace;
+    --dp-typography-body:17px;
+    --dp-typography-reading:16px;
+    --dp-typography-metadata:13px;
+    --dp-typography-label:11px;
+    --dp-spacing-column-gap:25px;
+    --dp-spacing-compact-gap:12px;
+    --dp-radius-key:4px;
+    --dp-radius-circular:50%;
+    --dp-border-hairline:1px;
+    --dp-motion-navigation:130ms;
+    --dp-motion-key:140ms;
+    --dp-motion-dial:150ms;
+    --dp-motion-settle:cubic-bezier(0.3,0.7,0.4,1.25);
+    --chassis:linear-gradient(150deg,#d6dadd 0%,#c9cfd2 48%,#bcc3c6 100%);
+    --raised:linear-gradient(180deg,#f0f2f3 0%,#e2e6e8 55%,#d7dcde 100%);
+    --well:linear-gradient(180deg,#aab2b7 0%,#c0c7ca 100%);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  [hidden]{display:none!important}
+  body{
+    margin:0;
+    padding:clamp(10px,2.4vw,30px);
+    background:
+      radial-gradient(1100px 560px at 18% -12%,#2c353b 0%,transparent 62%),
+      radial-gradient(900px 500px at 108% 110%,#242c31 0%,transparent 55%),
+      #161c20;
+    color:var(--dp-color-ink);
+    font-family:"Host Grotesk",var(--dp-typography-sans);
+    font-size:var(--dp-typography-body);
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  .chassis{
+    position:relative;
+    max-width:1440px;
+    margin:0 auto;
+    padding:clamp(14px,2vw,26px);
+    background:var(--chassis);
+    border:1px solid #a7aeb2;
+    border-radius:26px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.85) inset,
+      0 -3px 0 rgba(0,0,0,.13) inset,
+      0 34px 70px -26px rgba(0,0,0,.7),
+      0 3px 0 #a3aaad;
+  }
+  .chassis::before{
+    content:"";
+    position:absolute;
+    top:14px;bottom:14px;left:9px;
+    width:1px;
+    background:linear-gradient(180deg,rgba(0,0,0,.16),rgba(255,255,255,.65) 35%,rgba(0,0,0,.14));
+    pointer-events:none;
+  }
+  .screw{
+    position:absolute;width:9px;height:9px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#eef1f2,#a7afb3 70%,#8d969b);
+    box-shadow:0 1px 1px rgba(0,0,0,.35),0 0 0 1px rgba(0,0,0,.08) inset;
+    pointer-events:none;
+  }
+  .screw::after{
+    content:"";position:absolute;inset:38% 18%;
+    border-top:1px solid rgba(0,0,0,.45);
+    transform:rotate(-32deg);
+  }
+  .screw.tl{top:12px;left:12px}.screw.tr{top:12px;right:12px}
+  .screw.bl{bottom:12px;left:12px}.screw.br{bottom:12px;right:12px}
+
+  .opening{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    align-items:center;
+    gap:var(--dp-spacing-column-gap);
+    padding:clamp(10px,2vw,22px) clamp(8px,1.6vw,18px) clamp(20px,2.6vw,30px);
+  }
+  .eyebrow{
+    margin:0 0 12px;
+    font-family:"IBM Plex Mono",var(--dp-typography-mono);
+    font-size:var(--dp-typography-label);
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--dp-color-label);
+    display:flex;align-items:center;gap:8px;
+  }
+  .eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--dp-color-accent);box-shadow:0 0 0 3px rgba(241,91,34,.18)}
+  h1{
+    margin:0;
+    font-size:clamp(38px,8.6vw,106px);
+    line-height:.9;
+    letter-spacing:-.035em;
+    font-weight:700;
+    text-wrap:balance;
+  }
+  .lede{
+    margin:16px 0 0;
+    max-width:52ch;
+    font-size:var(--dp-typography-reading);
+    line-height:1.55;
+    color:var(--dp-color-label);
+  }
+  .assembly{
+    display:flex;align-items:center;gap:clamp(10px,1.4vw,18px);
+    padding:14px;
+    background:var(--raised);
+    border:1px solid #a6aeb2;
+    border-radius:16px;
+    box-shadow:
+      0 1px 0 #fff inset,
+      0 -2px 0 rgba(0,0,0,.1) inset,
+      0 14px 26px -18px rgba(0,0,0,.6);
+  }
+  .vents{
+    width:16px;height:88px;flex:none;
+    border-radius:5px;
+    background:repeating-linear-gradient(180deg,#8e989d 0 3px,transparent 3px 8px);
+    opacity:.75;
+  }
+  .dial{
+    position:relative;
+    width:104px;height:104px;flex:none;
+    display:grid;place-items:center;gap:2px;
+    border-radius:var(--dp-radius-circular);
+    border:1px solid #99a2a7;
+    background:radial-gradient(circle at 34% 28%,#f3f5f6,#c9cfd2 58%,#aeb5ba 100%);
+    color:var(--dp-color-ink);
+    cursor:pointer;
+    font-family:"IBM Plex Mono",var(--dp-typography-mono);
+    font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+    box-shadow:
+      0 2px 0 #fff inset,
+      0 -4px 8px rgba(0,0,0,.16) inset,
+      0 10px 18px -10px rgba(0,0,0,.55);
+    transition:transform var(--dp-motion-dial) var(--dp-motion-settle),box-shadow var(--dp-motion-dial) ease;
+  }
+  .dial::after{
+    content:"";position:absolute;top:11px;left:50%;transform:translateX(-50%);
+    width:6px;height:6px;border-radius:50%;
+    background:var(--dp-color-accent);
+    box-shadow:0 0 0 2px rgba(241,91,34,.2),0 0 8px rgba(241,91,34,.6);
+  }
+  .dial svg{display:block;margin-top:4px}
+  .dial:hover{transform:translateY(-2px);box-shadow:0 2px 0 #fff inset,0 -4px 8px rgba(0,0,0,.14) inset,0 16px 24px -12px rgba(0,0,0,.55)}
+  .dial:active{transform:translateY(1px);box-shadow:0 5px 10px rgba(0,0,0,.22) inset,0 1px 0 rgba(255,255,255,.35)}
+  .keys{display:flex;flex-direction:column;gap:8px}
+  .key{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    min-height:44px;padding:11px 16px;
+    font-family:"IBM Plex Mono",var(--dp-typography-mono);
+    font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--dp-color-ink);
+    background:var(--raised);
+    border:1px solid #a2aaae;
+    border-radius:var(--dp-radius-key);
+    cursor:pointer;
+    box-shadow:
+      0 1px 0 #fff inset,
+      0 2px 0 #b3babe,
+      0 6px 10px -7px rgba(0,0,0,.5);
+    transition:transform var(--dp-motion-key) var(--dp-motion-settle),box-shadow var(--dp-motion-key) ease,background var(--dp-motion-key) ease;
+  }
+  .key:hover{transform:translateY(-1px);background:linear-gradient(180deg,#f6f8f8,#e4e8ea 60%,#d9dee0)}
+  .key:active{transform:translateY(2px);box-shadow:0 3px 6px rgba(0,0,0,.2) inset,0 1px 0 rgba(255,255,255,.35)}
+  .key--ghost{background:transparent;box-shadow:none;border-color:#aeb5b9;color:var(--dp-color-label)}
+  .key--ghost:hover{background:rgba(255,255,255,.35)}
+  .key--ghost:active{box-shadow:0 2px 5px rgba(0,0,0,.16) inset}
+  .key[aria-pressed="true"]{
+    background:linear-gradient(180deg,#dfe4e5,#c8cfd2);
+    box-shadow:0 3px 7px rgba(0,0,0,.22) inset,0 1px 0 rgba(255,255,255,.4);
+    border-color:#98a1a6;
+    color:var(--dp-color-ink);
+  }
+  .key[aria-pressed="true"]::before{
+    content:"";width:7px;height:7px;border-radius:50%;
+    background:var(--dp-color-accent);
+    box-shadow:0 0 0 3px rgba(241,91,34,.18),0 0 7px rgba(241,91,34,.55);
+  }
+
+  :where(button,select,input,label.file):focus-visible{
+    outline:3px solid var(--dp-color-accent);
+    outline-offset:3px;
+  }
+
+  .deck{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 330px;
+    gap:var(--dp-spacing-column-gap);
+    align-items:start;
+    padding:0 clamp(4px,1vw,12px);
+  }
+  .panes{
+    display:grid;
+    grid-template-columns:minmax(0,1fr);
+    gap:var(--dp-spacing-column-gap);
+    align-items:start;
+    min-width:0;
+  }
+  .panes.compare{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .bay{
+    background:var(--raised);
+    border:1px solid #a8b0b4;
+    border-radius:16px;
+    padding:clamp(12px,1.6vw,18px);
+    box-shadow:
+      0 1px 0 #fff inset,
+      0 -2px 0 rgba(0,0,0,.09) inset,
+      0 16px 30px -24px rgba(0,0,0,.65);
+    min-width:0;
+  }
+  .bay-head{
+    display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+    gap:10px;
+    margin-bottom:12px;
+  }
+  .bay-head h2{
+    display:flex;align-items:center;gap:9px;
+    margin:0;min-width:0;
+    font-size:15px;font-weight:700;letter-spacing:-.01em;
+  }
+  .num{
+    flex:none;
+    font-family:"IBM Plex Mono",var(--dp-typography-mono);
+    font-size:10px;letter-spacing:.12em;
+    color:#fff;background:var(--dp-color-field);
+    padding:3px 6px;border-radius:3px;
+    box-shadow:0 1px 0 rgba(255,255,255,.5);
+  }
+  .pane-label{
+    font-family:"IBM Plex Mono",var(--dp-typography-mono);
+    font-size:12px;font-weight:500;letter-spacing:.02em;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .readouts{display:flex;flex-wrap:wrap;gap:5px}
+  .chip{
+    display:inline-flex;align-items:baseline;gap:5px;
+    padding:3px 7px;
+    background:linear-gradient(180deg,#f3f5f6,#e2e6e8);
+    border:1px solid #b0b7bb;border-radius:4px;
+    box-shadow:0 1px 0 #fff inset,0 1px 2px rgba(0,0,0,.1);
+  }
+  .chip-label{font-family:"IBM Plex Mono",var(--dp-typography-mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--dp-color-label)}
+  .chip b{font-family:"IBM Plex Mono",var(--dp-typography-mono);font-size:11px;font-variant-numeric:tabular-nums}
+
+  .screen{
+    position:relative;
+    display:flex;align-items:center;justify-content:center;
+    min-height:clamp(240px,42vh,520px);
+    padding:9px;
+    background:
+      radial-gradient(120% 120% at 50% 0%,#2b343a 0%,var(--dp-color-field) 60%),
+      var(--dp-color-field);
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:
+      0 3px 12px rgba(0,0,0,.55) inset,
+      0 0 0 1px rgba(0,0,0,.45) inset,
+      0 1px 0 rgba(255,255,255,.6);
+  }
+  .screen::after{
+    content:"";position:absolute;inset:0;border-radius:10px;
+    background:linear-gradient(115deg,rgba(255,255,255,.07),transparent 38%);
+    pointer-events:none;
+  }
+  .screen canvas{display:block;max-width:100%;max-height:min(56vh,600px);border-radius:4px;background:#0b0f12}
+  .empty{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    padding:28px;text-align:center;
+    color:var(--dp-color-on-field-muted);
+    font-family:"IBM Plex Mono",var(--dp-typography-mono);
+    font-size:12px;line-height:1.7;letter-spacing:.02em;
+    pointer-events:none;
+  }
+  .status{
+    position:absolute;left:12px;bottom:12px;max-width:calc(100% - 24px);
+    padding:5px 9px;
+    font-family:"IBM Plex Mono",var(--dp-typography-mono);
+    font-size:11px;letter-spacing:.03em;
+    color:var(--dp-color-on-field-muted);
+    background:rgba(9,13,16,.82);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:5px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .status[data-tone="warn"]{color:#ffd9a8;border-color:rgba(241,91,34,.5)}
+  .status[data-tone="err"]{color:#ffc3b5;border-color:rgba(241,91,34,.75)}
+
+  aside{display:flex;flex-direction:column;gap:var(--dp-spacing-compact-gap);min-width:0}
+  .well{
+    background:var(--well);
+    border:1px solid #a4acb0;
+    border-radius:10px;
+    padding:12px;
+    box-shadow:
+      0 2px 6px rgba(0,0,0,.16) inset,
+      0 1px 0 rgba(255,255,255,.6);
+  }
+  .well label{display:block;margin-bottom:12px;font-size:var(--dp-typography-metadata);color:#333d44}
+  .well label:last-child{margin-bottom:0}
+  output{float:right;font-family:"IBM Plex Mono",var(--dp-typography-mono);font-size:12px;color:var(--dp-color-ink);font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;margin-top:8px;accent-color:var(--dp-color-accent);cursor:pointer}
+  .check{display:flex!important;align-items:center;gap:9px;color:var(--dp-color-ink)!important;cursor:pointer;min-height:32px}
+  .check input{accent-color:var(--dp-color-accent);width:16px;height:16px;cursor:pointer}
+
+  select{
+    width:100%;margin-top:6px;
+    font-family:"IBM Plex Mono",var(--dp-typography-mono);
+    font-size:12px;
+    color:var(--dp-color-ink);
+    background:var(--raised);
+    border:1px solid #96a0a5;
+    border-radius:var(--dp-radius-key);
+    padding:9px 10px;
+    cursor:pointer;
+    box-shadow:0 1px 0 #fff inset,0 2px 0 #b3babe;
+  }
+  .compare-key{width:100%;margin-top:2px}
+  .hint{
+    margin:10px 0 0;
+    font-family:"IBM Plex Mono",var(--dp-typography-mono);
+    font-size:11px;line-height:1.6;color:var(--dp-color-label);
+  }
+
+  .file-warn{
+    display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;
+    margin:0 clamp(8px,1.6vw,18px) 6px;
+    padding:11px 14px;
+    background:linear-gradient(180deg,#252d32,#1d2428);
+    border:1px solid #141a1e;
+    border-left:3px solid var(--dp-color-accent);
+    border-radius:8px;
+    box-shadow:0 2px 8px rgba(0,0,0,.35) inset;
+    color:var(--dp-color-on-field);
+    font-size:13px;line-height:1.5;
+  }
+  .file-warn strong{font-weight:600}
+  .file-warn code{
+    font-family:"IBM Plex Mono",var(--dp-typography-mono);
+    font-size:11px;background:#12181c;border:1px solid #2c363c;
+    border-radius:4px;padding:1px 6px;color:#ffd9a8;
+  }
+  .file-warn a{color:#ffd9a8;font-weight:600;text-underline-offset:2px}
+  .file-warn a:focus-visible{outline:3px solid var(--dp-color-accent);outline-offset:2px;border-radius:3px}
+  .server-note{font-family:"IBM Plex Mono",var(--dp-typography-mono);font-size:11px;color:#93a2ab}
+  .server-note[data-tone="warn"]{color:#ffd9a8}
+
+  .footer{
+    margin-top:var(--dp-spacing-column-gap);
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:var(--dp-spacing-column-gap);
+    align-items:center;
+    padding:clamp(14px,1.8vw,20px) clamp(12px,1.6vw,18px);
+    background:linear-gradient(180deg,#eef0f1,#e0e4e6);
+    border:1px solid #b0b7bb;
+    border-radius:14px;
+    box-shadow:0 1px 0 #fff inset,0 -2px 0 rgba(0,0,0,.06) inset;
+  }
+  .footer h2{
+    display:flex;align-items:center;gap:9px;
+    margin:0 0 6px;font-size:14px;font-weight:700;
+  }
+  .footer p{margin:0;max-width:62ch;font-size:13px;line-height:1.6;color:var(--dp-color-label)}
+  .footer code{
+    font-family:"IBM Plex Mono",var(--dp-typography-mono);
+    font-size:11px;color:var(--dp-color-ink);
+    background:#cfd4d6;border:1px solid #b3babe;border-radius:4px;padding:2px 6px;
+  }
+  .footer-groups{display:flex;gap:var(--dp-spacing-column-gap)}
+  .footer-groups div{min-width:0}
+  .footer-groups span{
+    display:block;
+    font-family:"IBM Plex Mono",var(--dp-typography-mono);
+    font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--dp-color-label);
+    margin-bottom:3px;
+  }
+  .footer-groups b{font-family:"IBM Plex Mono",var(--dp-typography-mono);font-size:12px;font-weight:500}
+  .credit{
+    margin:10px 0 0!important;
+    font-family:"IBM Plex Mono",var(--dp-typography-mono);
+    font-size:10px!important;letter-spacing:.14em;text-transform:uppercase;color:var(--dp-color-label);
+  }
+  .credit b{color:var(--dp-color-ink);font-weight:600}
+
+  @media (max-width:1100px){
+    .assembly{gap:10px;padding:12px}
+    .dial{width:86px;height:86px;font-size:9px}
+    .dial svg{width:19px;height:19px}
+    .vents{height:74px}
+    .deck{grid-template-columns:minmax(0,1fr) 290px}
+  }
+  @media (max-width:760px){
+    .opening{grid-template-columns:1fr;gap:18px;padding-bottom:20px}
+    .assembly{justify-content:space-between}
+    .deck{grid-template-columns:1fr}
+    .panes.compare{grid-template-columns:1fr}
+    .readouts{width:100%}
+    .footer{grid-template-columns:1fr;gap:14px}
+    .footer-groups{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  }
+  @media (max-width:370px){
+    body{padding:8px}
+    .chassis{padding:12px;border-radius:20px}
+    .assembly{padding:10px;gap:8px}
+    .vents{height:60px;width:12px}
+    .dial{width:66px;height:66px;font-size:8px}
+    .dial::after{top:7px;width:5px;height:5px}
+    .dial svg{width:16px;height:16px}
+    .keys{gap:6px}
+    .key{padding:9px 10px;font-size:10px;min-height:40px}
+    .footer-groups{grid-template-columns:1fr}
+    .bay-head{align-items:flex-start}
+    .readouts{gap:4px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+    .key:hover,.dial:hover{transform:none}
+    .key:active,.dial:active{transform:none}
+  }
+</style>
+</head>
+<body>
+<div class="chassis">
+  <span class="screw tl" aria-hidden="true"></span>
+  <span class="screw tr" aria-hidden="true"></span>
+  <span class="screw bl" aria-hidden="true"></span>
+  <span class="screw br" aria-hidden="true"></span>
+
+  <div id="fileWarn" class="file-warn" role="status" hidden>
+    <strong>Opened as a local file.</strong>
+    <span>Browsers block loading <code>.onnx</code> from <code>file://</code>. Double-click <code>run.bat</code> and keep its window open, then use <a href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a>.</span>
+    <span id="serverNote" class="server-note">Looking for a running server…</span>
+  </div>
+
+  <header class="opening">
+    <div class="opening-copy">
+      <p class="eyebrow">Bay 01 · Model play area</p>
+      <h1>Shatavahana</h1>
+      <p class="lede">Run your trained pose models live in the browser. Pick a model, or compare two side by side. Local inference only — no backend, no upload.</p>
+    </div>
+
+    <div class="assembly" role="group" aria-label="Source controls">
+      <div class="vents" aria-hidden="true"></div>
+      <button id="camBtn" class="dial" type="button">
+        <span class="dial-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round">
+            <path d="M4 8h3l1.6-2h6.8L17 8h3v11H4z"/><circle cx="12" cy="13.3" r="3.2"/>
+          </svg>
+        </span>
+        <span class="dial-label">Camera</span>
+      </button>
+      <div class="keys">
+        <button id="imgBtn" class="key" type="button">Image</button>
+        <button id="vidBtn" class="key" type="button">Video</button>
+        <button id="stopBtn" class="key key--ghost" type="button">Stop</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="deck">
+    <div class="panes" id="panes">
+      <section class="bay pane" data-pane="0" aria-labelledby="paneATitle">
+        <div class="bay-head">
+          <h2 id="paneATitle"><span class="num">01</span> <span class="pane-label">best.onnx</span></h2>
+          <div class="readouts" aria-label="Model A readouts">
+            <span class="chip"><span class="chip-label">FPS</span><b data-r="fps">—</b></span>
+            <span class="chip"><span class="chip-label">Input</span><b data-r="input">—</b></span>
+            <span class="chip"><span class="chip-label">Kpts</span><b data-r="kpts">—</b></span>
+            <span class="chip"><span class="chip-label">Det</span><b data-r="det">0</b></span>
+            <span class="chip"><span class="chip-label">EP</span><b data-r="ep">—</b></span>
+          </div>
+        </div>
+        <div class="screen">
+          <canvas aria-label="Model A detection preview"></canvas>
+          <div class="empty">Pick a source — camera, image or video — and the model will render here.</div>
+          <div class="status" aria-live="polite">Starting…</div>
+        </div>
+      </section>
+
+      <section class="bay pane" data-pane="1" aria-labelledby="paneBTitle" hidden>
+        <div class="bay-head">
+          <h2 id="paneBTitle"><span class="num">02</span> <span class="pane-label">v2.onnx</span></h2>
+          <div class="readouts" aria-label="Model B readouts">
+            <span class="chip"><span class="chip-label">FPS</span><b data-r="fps">—</b></span>
+            <span class="chip"><span class="chip-label">Input</span><b data-r="input">—</b></span>
+            <span class="chip"><span class="chip-label">Kpts</span><b data-r="kpts">—</b></span>
+            <span class="chip"><span class="chip-label">Det</span><b data-r="det">0</b></span>
+            <span class="chip"><span class="chip-label">EP</span><b data-r="ep">—</b></span>
+          </div>
+        </div>
+        <div class="screen">
+          <canvas aria-label="Model B detection preview"></canvas>
+          <div class="empty"></div>
+          <div class="status" aria-live="polite">Ready</div>
+        </div>
+      </section>
+    </div>
+
+    <aside aria-labelledby="controlsTitle">
+      <div class="bay">
+        <div class="bay-head" style="margin-bottom:10px">
+          <h2 id="controlsTitle"><span class="num">03</span> Controls</h2>
+        </div>
+
+        <div class="well" style="margin-bottom:12px">
+          <label for="modelA">Model A
+            <select id="modelA">
+              <option value="best" selected>best.onnx - YOLO11n-pose 320</option>
+              <option value="v2">v2.onnx - YOLO26n-pose 640</option>
+            </select>
+          </label>
+          <label for="modelB" id="modelBWrap" hidden>Model B
+            <select id="modelB">
+              <option value="best">best.onnx - YOLO11n-pose 320</option>
+              <option value="v2" selected>v2.onnx - YOLO26n-pose 640</option>
+            </select>
+          </label>
+          <button id="compareBtn" class="key compare-key" type="button" aria-pressed="false">Side by side</button>
+          <p id="modelHint" class="hint">Runs the three bundled models directly. Toggle side by side to compare two at once.</p>
+        </div>
+
+        <div class="well" style="margin-bottom:12px">
+          <label for="conf">Confidence <output id="confOut">0.35</output>
+            <input id="conf" type="range" min="0.05" max="0.95" step="0.05" value="0.35">
+          </label>
+          <label for="kp">Keypoint conf <output id="kpOut">0.25</output>
+            <input id="kp" type="range" min="0.05" max="0.95" step="0.05" value="0.25">
+          </label>
+          <label class="check" for="boxes"><input id="boxes" type="checkbox" checked> Draw boxes</label>
+          <label class="check" for="skeleton"><input id="skeleton" type="checkbox" checked> Draw skeleton (17 kpt)</label>
+          <label class="check" for="mirror"><input id="mirror" type="checkbox"> Mirror preview</label>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="footer">
+    <div>
+      <h2><span class="num">04</span> Run setup</h2>
+      <p>First time: run <code>setup.bat</code> to install dependencies and convert the <code>.pt</code> models to <code>.onnx</code>. After that, run <code>run.bat</code> any time to serve this page at <code>http://localhost:8000</code> — a static file server only, no backend logic. Never open <code>index.html</code> directly.</p>
+      <p class="credit">Built by <b>Sharva Gavalkar</b></p>
+    </div>
+    <div class="footer-groups">
+      <div><span>Runtime</span><b>ONNX Runtime Web</b></div>
+      <div><span>Privacy</span><b>100% local</b></div>
+      <div><span>Credits</span><b>Sharva Gavalkar</b></div>
+    </div>
+  </footer>
+</div>
+
+<input id="imgInput" type="file" accept="image/*" hidden>
+<input id="vidInput" type="file" accept="video/*" hidden>
+<video id="video" playsinline muted loop hidden></video>
+<img id="image" alt="" hidden>
+
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.0/dist/ort.min.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+const video = $('video'), imageEl = $('image');
+const MODEL_LABEL = { best: 'best.onnx · YOLO11n-pose 320', v1: 'v1.onnx', v2: 'v2.onnx · YOLO26n-pose 640' };
+
+let source = null, sourceKind = null, lastObjUrl = null, compare = false;
+let lastInfer = 0;
+const panes = [];
+
+const hasRuntime = typeof ort !== 'undefined';
+if (hasRuntime) {
+  ort.env.wasm.numThreads = 1;
+  ort.env.wasm.simd = true;
+  ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.0/dist/';
+}
+
+const SKELETON = [
+  [5,7],[7,9],[6,8],[8,10],[5,6],[5,11],[6,12],[11,12],
+  [11,13],[13,15],[12,14],[14,16],[0,1],[0,2],[1,3],[2,4]
+];
+
+function makePane(root, index) {
+  const canvas = root.querySelector('canvas');
+  const pane = {
+    root, index, canvas,
+    ctx: canvas.getContext('2d'),
+    pcanvas: document.createElement('canvas'),
+    pctx: null,
+    empty: root.querySelector('.empty'),
+    status: root.querySelector('.status'),
+    name: root.querySelector('.pane-label'),
+    fpsEl: root.querySelector('[data-r="fps"]'),
+    inEl: root.querySelector('[data-r="input"]'),
+    kptEl: root.querySelector('[data-r="kpts"]'),
+    detEl: root.querySelector('[data-r="det"]'),
+    epEl: root.querySelector('[data-r="ep"]'),
+    session: null, inputName: '', outputName: '', inputW: 640, inputH: 640,
+    dets: [], busy: false, lastInfer: 0, fps: 0, loaded: false
+  };
+  pane.pctx = pane.pcanvas.getContext('2d', { willReadFrequently: true });
+  return pane;
+}
+
+function served() {
+  return location.protocol === 'http:' || location.protocol === 'https:';
+}
+
+async function autoConnect() {
+  for (const port of [8000, 8080]) {
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 1500);
+      const res = await fetch('http://127.0.0.1:' + port + '/index.html', { mode: 'no-cors', cache: 'no-store', signal: ctrl.signal });
+      clearTimeout(timer);
+      if (res) {
+        location.replace('http://127.0.0.1:' + port + '/index.html');
+        return;
+      }
+    } catch (e) {}
+  }
+  const note = $('serverNote');
+  note.textContent = 'No server found on port 8000 or 8080 — double-click run.bat first.';
+  note.dataset.tone = 'warn';
+}
+
+function setup() {
+  document.querySelectorAll('.pane').forEach((root, i) => {
+    const pane = makePane(root, i);
+    panes.push(pane);
+    if (i > 0) pane.empty.style.display = 'none';
+  });
+
+  if (!hasRuntime) {
+    paneStatus(panes[0], 'Inference runtime failed to load — check your connection', 'err');
+    return;
+  }
+
+  if (!served()) {
+    $('fileWarn').hidden = false;
+    panes.forEach((p) => paneStatus(p, 'Run run.bat, then open http://127.0.0.1:8000', 'warn'));
+    autoConnect();
+    return;
+  }
+
+  loadPaneModel(panes[0], 'best');
+  loadPaneModel(panes[1], 'v2');
+}
+
+function paneStatus(pane, msg, tone) {
+  pane.status.textContent = msg;
+  pane.status.dataset.tone = tone || '';
+}
+
+function paneReady(pane) {
+  if (!pane.session) return false;
+  if (!source) return false;
+  const w = source.videoWidth || source.naturalWidth || 0;
+  const h = source.videoHeight || source.naturalHeight || 0;
+  return w > 0 && h > 0;
+}
+
+async function loadPaneModel(pane, name) {
+  const label = MODEL_LABEL[name] || name;
+  pane.name.textContent = label;
+  pane.loaded = false;
+  pane.safeName = label;
+
+  if (!hasRuntime) {
+    paneStatus(pane, 'Inference runtime failed to load', 'err');
+    return;
+  }
+
+  if (!served()) {
+    paneStatus(pane, 'Run run.bat, then open http://localhost:8000', 'warn');
+    return;
+  }
+
+  paneStatus(pane, 'Loading ' + label + ' …');
+
+  try {
+    const res = await fetch(name + '.onnx', { cache: 'no-store' });
+    if (!res.ok) throw new Error(res.status === 404 ? 'MISSING' : 'HTTP ' + res.status);
+    const buf = await res.arrayBuffer();
+    await createPaneSession(pane, buf, label);
+    pane.loaded = true;
+  } catch (e) {
+    const msg = String(e && e.message || e);
+    pane.name.textContent = label + ' — missing';
+    paneStatus(pane, msg === 'MISSING'
+      ? label + ' not found — run setup.bat to convert it'
+      : 'Could not load ' + label + ': ' + msg, 'warn');
+  }
+}
+
+function sessionIO(s) {
+  const inputNames = (s.inputNames && s.inputNames.length) ? s.inputNames : (s.inputs || []).map((i) => i.name);
+  const outputNames = (s.outputNames && s.outputNames.length) ? s.outputNames : (s.outputs || []).map((o) => o.name);
+  const inName = inputNames[0] || '';
+  const outName = outputNames[0] || '';
+  let dims = [1, 3, 640, 640];
+  if (s.inputMetadata && s.inputMetadata[inName] && s.inputMetadata[inName].dims) {
+    dims = s.inputMetadata[inName].dims;
+  } else if (s.inputs && s.inputs[0] && s.inputs[0].dims) {
+    dims = s.inputs[0].dims;
+  }
+  return { inName, outName, dims };
+}
+
+async function createPaneSession(pane, buf, label) {
+  if (pane.session) { try { pane.session.release(); } catch (e) {} pane.session = null; }
+
+  let s = null, ep = 'webgpu';
+  try {
+    s = await ort.InferenceSession.create(buf, { executionProviders: ['webgpu', 'wasm'], graphOptimizationLevel: 'all' });
+  } catch (e) {
+    s = await ort.InferenceSession.create(buf, { executionProviders: ['wasm'], graphOptimizationLevel: 'all' });
+    ep = 'wasm';
+  }
+
+  const io = sessionIO(s);
+  if (!io.inName) {
+    try { s.release(); } catch (e) {}
+    throw new Error('model has no input');
+  }
+
+  const d = io.dims || [1, 3, 640, 640];
+  pane.inputName = io.inName;
+  pane.outputName = io.outName;
+  pane.inputH = d[2] > 0 ? d[2] : 640;
+  pane.inputW = d[3] > 0 ? d[3] : 640;
+  pane.pcanvas.width = pane.inputW;
+  pane.pcanvas.height = pane.inputH;
+  pane.dets = [];
+  pane.fps = 0;
+  pane.session = s;
+  pane.inEl.textContent = pane.inputW + '×' + pane.inputH;
+  pane.epEl.textContent = ep;
+  pane.kptEl.textContent = '—';
+  pane.detEl.textContent = '0';
+  pane.fpsEl.textContent = '—';
+
+  if (source) {
+    paneStatus(pane, 'Loaded ' + label + ' — rendering');
+    pane.empty.style.display = 'none';
+  } else {
+    paneStatus(pane, 'Loaded ' + label + ' — pick a source');
+    if (pane.index === 0) pane.empty.style.display = 'flex';
+  }
+}
+
+function preprocess(pane) {
+  const sw = source.videoWidth || source.naturalWidth;
+  const sh = source.videoHeight || source.naturalHeight;
+  const scale = Math.min(pane.inputW / sw, pane.inputH / sh);
+  const nw = Math.round(sw * scale);
+  const nh = Math.round(sh * scale);
+  const dx = Math.floor((pane.inputW - nw) / 2);
+  const dy = Math.floor((pane.inputH - nh) / 2);
+  pane.pctx.fillStyle = 'rgb(114,114,114)';
+  pane.pctx.fillRect(0, 0, pane.inputW, pane.inputH);
+  pane.pctx.drawImage(source, dx, dy, nw, nh);
+  const px = pane.pctx.getImageData(0, 0, pane.inputW, pane.inputH).data;
+  const n = pane.inputW * pane.inputH;
+  const f = new Float32Array(3 * n);
+  for (let i = 0; i < n; i++) {
+    const j = i * 4;
+    f[i] = px[j] / 255;
+    f[n + i] = px[j + 1] / 255;
+    f[2 * n + i] = px[j + 2] / 255;
+  }
+  return {
+    tensor: new ort.Tensor('float32', f, [1, 3, pane.inputH, pane.inputW]),
+    meta: { scale, dx, dy }
+  };
+}
+
+function iou(a, b) {
+  const x1 = Math.max(a[0], b[0]), y1 = Math.max(a[1], b[1]);
+  const x2 = Math.min(a[2], b[2]), y2 = Math.min(a[3], b[3]);
+  const iw = Math.max(0, x2 - x1), ih = Math.max(0, y2 - y1);
+  const inter = iw * ih;
+  const ua = (a[2] - a[0]) * (a[3] - a[1]) + (b[2] - b[0]) * (b[3] - b[1]) - inter;
+  return ua > 0 ? inter / ua : 0;
+}
+
+function postprocess(out, meta) {
+  const d = out.dims, data = out.data;
+  let f, a, transposed;
+  if (d.length === 3) {
+    if (d[1] < d[2]) { f = d[1]; a = d[2]; transposed = false; }
+    else { f = d[2]; a = d[1]; transposed = true; }
+  } else if (d.length === 2) {
+    if (d[0] < d[1]) { f = d[0]; a = d[1]; transposed = false; }
+    else { f = d[1]; a = d[0]; transposed = true; }
+  } else {
+    return { dets: [], kpts: 0 };
+  }
+
+  const at = transposed ? (c, i) => data[i * f + c] : (c, i) => data[c * a + i];
+
+  let kpts = 0;
+  if (f > 5 && (f - 5) % 3 === 0) {
+    const k = (f - 5) / 3;
+    if (k >= 3) kpts = k;
+  }
+  const nc = kpts ? 1 : Math.max(1, f - 4);
+  const conf = parseFloat($('conf').value);
+  const s = meta.scale, dx = meta.dx, dy = meta.dy;
+  const cand = [];
+
+  for (let i = 0; i < a; i++) {
+    let score = at(4, i);
+    let cls = 0;
+    if (!kpts && nc > 1) {
+      for (let c = 1; c < nc; c++) {
+        const v = at(4 + c, i);
+        if (v > score) { score = v; cls = c; }
+      }
+    }
+    if (!(score > conf)) continue;
+
+    const cx = at(0, i), cy = at(1, i), bw = at(2, i), bh = at(3, i);
+    const box = [
+      (cx - bw / 2 - dx) / s,
+      (cy - bh / 2 - dy) / s,
+      (cx + bw / 2 - dx) / s,
+      (cy + bh / 2 - dy) / s
+    ];
+
+    let kp = null;
+    if (kpts) {
+      kp = new Array(kpts);
+      for (let k = 0; k < kpts; k++) {
+        kp[k] = {
+          x: (at(5 + 3 * k, i) - dx) / s,
+          y: (at(6 + 3 * k, i) - dy) / s,
+          s: at(7 + 3 * k, i)
+        };
+      }
+    }
+    cand.push({ score, cls, box, kp });
+  }
+
+  cand.sort((p, q) => q.score - p.score);
+  const keep = [];
+  for (const c of cand) {
+    if (keep.length >= 50) break;
+    let ok = true;
+    for (const k of keep) {
+      if (c.cls === k.cls && iou(c.box, k.box) > 0.45) { ok = false; break; }
+    }
+    if (ok) keep.push(c);
+  }
+  return { dets: keep, kpts };
+}
+
+async function inferPane(pane) {
+  if (pane.busy || !paneReady(pane)) return;
+  pane.busy = true;
+  try {
+    const { tensor, meta } = preprocess(pane);
+    const out = await pane.session.run({ [pane.inputName]: tensor });
+    const key = (pane.outputName && out[pane.outputName]) ? pane.outputName : Object.keys(out)[0];
+    const res = postprocess(out[key], meta);
+    pane.dets = res.dets;
+    pane.detEl.textContent = res.dets.length;
+    pane.kptEl.textContent = res.kpts || '—';
+
+    const now = performance.now();
+    const dt = pane.lastInfer ? now - pane.lastInfer : 0;
+    if (dt > 0) pane.fps = pane.fps * 0.85 + (1000 / dt) * 0.15;
+    pane.lastInfer = now;
+    pane.fpsEl.textContent = pane.fps ? pane.fps.toFixed(0) : '—';
+  } catch (e) {
+    paneStatus(pane, 'Inference error: ' + e.message, 'err');
+  } finally {
+    pane.busy = false;
+  }
+}
+
+function drawPane(pane) {
+  const sw = source && (source.videoWidth || source.naturalWidth);
+  const sh = source && (source.videoHeight || source.naturalHeight);
+  if (!sw || !sh) return;
+  if (pane.canvas.width !== sw || pane.canvas.height !== sh) {
+    pane.canvas.width = sw;
+    pane.canvas.height = sh;
+  }
+  const mirror = $('mirror').checked;
+  pane.ctx.save();
+  if (mirror) { pane.ctx.translate(sw, 0); pane.ctx.scale(-1, 1); }
+  pane.ctx.drawImage(source, 0, 0, sw, sh);
+  pane.ctx.restore();
+
+  const mx = (x) => mirror ? sw - x : x;
+  const k = Math.max(1, pane.canvas.width / 640);
+  const drawBoxes = $('boxes').checked;
+  const drawSk = $('skeleton').checked;
+  const kpThr = parseFloat($('kp').value);
+
+  for (const d of pane.dets) {
+    if (drawBoxes) {
+      const xa = mx(d.box[0]), xb = mx(d.box[2]);
+      const x1 = Math.min(xa, xb), y1 = d.box[1], x2 = Math.max(xa, xb), y2 = d.box[3];
+      pane.ctx.lineWidth = 2 * k;
+      pane.ctx.strokeStyle = '#4ade80';
+      pane.ctx.shadowColor = 'rgba(74,222,128,.6)';
+      pane.ctx.shadowBlur = 6 * k;
+      pane.ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+      pane.ctx.shadowBlur = 0;
+      const label = (d.cls ? 'cls ' + d.cls : 'person') + ' ' + d.score.toFixed(2);
+      pane.ctx.font = 600 * k + 'px ui-sans-serif,system-ui,sans-serif';
+      const tw = pane.ctx.measureText(label).width;
+      pane.ctx.fillStyle = 'rgba(5,8,11,.75)';
+      pane.ctx.fillRect(x1, Math.max(0, y1 - 20 * k), tw + 10 * k, 20 * k);
+      pane.ctx.fillStyle = '#bbf7d0';
+      pane.ctx.fillText(label, x1 + 5 * k, Math.max(15 * k, y1 - 6 * k));
+    }
+
+    if (d.kp) {
+      if (drawSk && d.kp.length === 17) {
+        pane.ctx.strokeStyle = 'rgba(56,189,248,.85)';
+        pane.ctx.lineWidth = 2.5 * k;
+        pane.ctx.lineCap = 'round';
+        for (const pair of SKELETON) {
+          const kp1 = d.kp[pair[0]], kp2 = d.kp[pair[1]];
+          if (kp1.s >= kpThr && kp2.s >= kpThr) {
+            pane.ctx.beginPath();
+            pane.ctx.moveTo(mx(kp1.x), kp1.y);
+            pane.ctx.lineTo(mx(kp2.x), kp2.y);
+            pane.ctx.stroke();
+          }
+        }
+      }
+      for (const p of d.kp) {
+        if (p.s < kpThr) continue;
+        pane.ctx.beginPath();
+        pane.ctx.fillStyle = p.s > 0.6 ? '#fbbf24' : '#38bdf8';
+        pane.ctx.arc(mx(p.x), p.y, 3.2 * k, 0, Math.PI * 2);
+        pane.ctx.fill();
+      }
+    }
+  }
+}
+
+function loop() {
+  requestAnimationFrame(loop);
+  for (const pane of panes) {
+    if (pane.root.hidden) continue;
+    drawPane(pane);
+    inferPane(pane);
+  }
+}
+
+function setEmpty(show) {
+  panes.forEach((p) => {
+    p.empty.style.display = (show && p.index === 0) ? 'flex' : 'none';
+  });
+}
+
+function clearSource() {
+  if (video.srcObject) video.srcObject.getTracks().forEach((t) => t.stop());
+  video.srcObject = null;
+  video.pause();
+  video.removeAttribute('src');
+  if (lastObjUrl) { URL.revokeObjectURL(lastObjUrl); lastObjUrl = null; }
+  source = null;
+  sourceKind = null;
+  panes.forEach((p) => {
+    p.dets = [];
+    p.fps = 0;
+    p.detEl.textContent = '0';
+    p.kptEl.textContent = '—';
+    p.fpsEl.textContent = '—';
+    p.ctx.clearRect(0, 0, p.canvas.width, p.canvas.height);
+    paneStatus(p, p.session ? 'Loaded — pick a source' : 'No model');
+  });
+  setEmpty(true);
+}
+
+async function startCamera() {
+  clearSource();
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    panes.forEach((p) => paneStatus(p, 'Camera needs http://localhost — run setup.bat, or use Image/Video', 'warn'));
+    return;
+  }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+      audio: false
+    });
+    video.srcObject = stream;
+    await video.play();
+    source = video;
+    sourceKind = 'video';
+    setEmpty(false);
+    panes.forEach((p) => paneStatus(p, 'Camera live'));
+  } catch (e) {
+    const messages = {
+      NotAllowedError: 'Camera permission denied — allow it in the address bar, or use Image/Video.',
+      PermissionDeniedError: 'Camera permission denied — allow it in the address bar, or use Image/Video.',
+      NotFoundError: 'No camera found — use Image or Video instead.',
+      NotReadableError: 'Camera is busy in another app — close it and try again.',
+      SecurityError: 'Camera blocked — open via http://localhost (run setup.bat).'
+    };
+    panes.forEach((p) => paneStatus(p, messages[e.name] || ('Camera error: ' + e.message), 'warn'));
+  }
+}
+
+function showImage(file) {
+  if (!file) return;
+  clearSource();
+  lastObjUrl = URL.createObjectURL(file);
+  imageEl.onload = () => {
+    source = imageEl;
+    sourceKind = 'image';
+    setEmpty(false);
+    panes.forEach((p) => paneStatus(p, 'Image loaded'));
+  };
+  imageEl.src = lastObjUrl;
+}
+
+function showVideoFile(file) {
+  if (!file) return;
+  clearSource();
+  lastObjUrl = URL.createObjectURL(file);
+  video.srcObject = null;
+  video.src = lastObjUrl;
+  video.onloadedmetadata = () => {
+    video.play();
+    source = video;
+    sourceKind = 'video';
+    setEmpty(false);
+    panes.forEach((p) => paneStatus(p, 'Video playing'));
+  };
+}
+
+function setCompare(value) {
+  compare = value;
+  const btn = $('compareBtn');
+  btn.setAttribute('aria-pressed', String(compare));
+  btn.textContent = compare ? 'Single view' : 'Side by side';
+  $('panes').classList.toggle('compare', compare);
+  panes[1].root.hidden = !compare;
+  $('modelBWrap').hidden = !compare;
+  $('modelHint').textContent = compare
+    ? 'Comparing Model A and Model B on the same source.'
+    : 'Running one model. Toggle side by side to compare two at once.';
+  if (compare && !panes[1].session) loadPaneModel(panes[1], $('modelB').value);
+}
+
+$('compareBtn').addEventListener('click', () => setCompare(!compare));
+$('modelA').addEventListener('change', (e) => loadPaneModel(panes[0], e.target.value));
+$('modelB').addEventListener('change', (e) => { if (panes[1].root.hidden) return; loadPaneModel(panes[1], e.target.value); });
+
+$('camBtn').addEventListener('click', startCamera);
+$('imgBtn').addEventListener('click', () => $('imgInput').click());
+$('vidBtn').addEventListener('click', () => $('vidInput').click());
+$('stopBtn').addEventListener('click', clearSource);
+
+$('imgInput').addEventListener('change', (e) => { showImage(e.target.files[0]); e.target.value = ''; });
+$('vidInput').addEventListener('change', (e) => { showVideoFile(e.target.files[0]); e.target.value = ''; });
+
+$('conf').addEventListener('input', (e) => { $('confOut').textContent = parseFloat(e.target.value).toFixed(2); });
+$('kp').addEventListener('input', (e) => { $('kpOut').textContent = parseFloat(e.target.value).toFixed(2); });
+
+['dragover', 'drop'].forEach((ev) => window.addEventListener(ev, (e) => e.preventDefault()));
+window.addEventListener('drop', (e) => {
+  const file = e.dataTransfer.files[0];
+  if (!file) return;
+  if (file.type.startsWith('image/')) showImage(file);
+  else if (file.type.startsWith('video/')) showVideoFile(file);
+});
+
+setup();
+setEmpty(true);
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
+
